@@ -1,5 +1,6 @@
 #include <iostream>
-#include <string> // Include the string header
+#include <string>   // Include the string header
+#include <map>      // Include the map header
 
 void printMenu(){
     std::cout << "\n=================== " << std::endl;
@@ -66,30 +67,23 @@ void goToNextTimeFrame(){
 
 void processUserOption(const std::string& userOption){
 
-    switch (userOption[0])
-    {
-    case '1':
-        printHelp();
-        break;
-    case '2':
-        printExhangeStats();
-        break;
-    case '3':
-        enterOffer();
-        break;
-    case '4':
-        enterBid();
-        break;
-    case '5':
-        printWallet();
-        break;
-    case '6':
-        goToNextTimeFrame();
-        break;                                                            
-    default:
+    // Define a map to associate user input with functions
+    static std::map<char, void(*)()> optionMap={
+        {'1', printHelp},
+        {'2', printExhangeStats},
+        {'3', enterOffer},
+        {'4', enterBid},
+        {'5', printWallet},
+        {'6', goToNextTimeFrame}
+    };
+
+    // Check if the input is valid and call the associated function
+    if (userOption.length() == 1 && optionMap.count(userOption[0])) {
+        optionMap[userOption[0]](); // Call the function
+    } else {
         std::cout << userOption << " is not a valid input. Please provide an input between 1 to 6 " << std::endl;
-        break;
     }
+
 }
 
 
