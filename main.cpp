@@ -1,7 +1,8 @@
 #include <iostream>
+#include <string> // Include the string header
 
-void printChar(char inputChar) {
-    std::cout << "You entered: " << inputChar << std::endl;
+void printChar(const std::string& inputString) {
+    std::cout << "You entered: " << inputString << std::endl;
 }
 
 int main()
@@ -31,10 +32,11 @@ int main()
         std::cout << "Type in 1-6: ";
 
         //int userOption;
-        char userOption;
-        std::cin >> userOption;
+        std::string userOption;
+        // std::cin >> userOption;
+        std::getline(std::cin, userOption);
 
-        switch (userOption)
+        switch (userOption[0])
         {
         case '1':
             /* code */
