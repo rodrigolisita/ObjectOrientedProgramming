@@ -2,7 +2,7 @@
 #include <string> // Include the string header
 
 void printChar(const std::string& inputString) {
-    std::cout << "You entered: " << inputString << std::endl;
+    std::cout << "You entered " << inputString << std::endl;
 }
 
 int main()
@@ -40,27 +40,27 @@ int main()
         {
         case '1':
             /* code */
-            printChar(userOption);
+            printChar("Help - choose options from the menu\nand follow the on screen instructions.");
             break;
         case '2':
             /* code */
-            printChar(userOption);
+            printChar("2: Print exhange stats");
             break;
         case '3':
             /* code */
-            printChar(userOption);
+            printChar("3: Make an offer ");
             break;
         case '4':
             /* code */
-            printChar(userOption);
+            printChar("4: Make a bid ");
             break;
         case '5':
             /* code */
-            printChar(userOption);
+            printChar("5: Print wallet");
             break;
         case '6':
             /* code */
-            printChar(userOption);
+            printChar("6: Continue");
             break;                                                            
         default:
             std::cout << userOption << " is not a valid input. Please provide an input between 1 to 6 " << std::endl;
