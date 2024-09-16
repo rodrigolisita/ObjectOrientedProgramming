@@ -37,7 +37,11 @@ void printChar(const std::string& inputString) {
 }
 
 void printHelp(){
-    printMenu();
+    //printMenu();
+    std::cout << "Help - your aim is to make money." << std::endl;
+    std::cout << "Analyse the market and make bids" << std::endl;
+    std::cout << "and offers. " << std::endl;
+
 }
 
 void printExhangeStats(){
