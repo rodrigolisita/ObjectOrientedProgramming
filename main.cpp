@@ -2,7 +2,7 @@
 #include <string> // Include the string header
 
 void printMenu(){
-    std::cout << "=================== " << std::endl;
+    std::cout << "\n=================== " << std::endl;
     std::cout << "====== Menu ======= " << std::endl;
     // 1 print help
     std::cout << "1: Print help " << std::endl;
@@ -33,30 +33,54 @@ std::string getUserOption(){
 }
 
 void printChar(const std::string& inputString) {
-    std::cout << "You entered " << inputString << std::endl;
+    std::cout << inputString << std::endl;
 }
+
+void printHelp(){
+    printMenu();
+}
+
+void printExhangeStats(){
+    printChar("Market looks good.");
+}
+void enterOffer(){
+    printChar("3: Make an offer.");
+}
+
+void enterBid(){
+    printChar("4: Make a bid.");
+}
+
+void printWallet(){
+    printChar("5: Print wallet.");
+}
+
+void goToNextTimeFrame(){
+    printChar("6: Going to next time frame.");
+}
+
 
 void processUserOption(const std::string& userOption){
 
     switch (userOption[0])
     {
     case '1':
-        printChar("1: Help - choose options from the menu\nand follow the on screen instructions.");
+        printHelp();
         break;
     case '2':
-        printChar("2: Print exhange stats");
+        printExhangeStats();
         break;
     case '3':
-        printChar("3: Make an offer ");
+        enterOffer();
         break;
     case '4':
-        printChar("4: Make a bid ");
+        enterBid();
         break;
     case '5':
-        printChar("5: Print wallet");
+        printWallet();
         break;
     case '6':
-        printChar("6: Continue");
+        goToNextTimeFrame();
         break;                                                            
     default:
         std::cout << userOption << " is not a valid input. Please provide an input between 1 to 6 " << std::endl;
