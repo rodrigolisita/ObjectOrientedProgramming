@@ -1,8 +1,14 @@
 #include <iostream>
 
+void printChar(char inputChar) {
+    std::cout << "You entered: " << inputChar << std::endl;
+}
+
 int main()
 {
     while(true){
+
+        std::cout << "=================== " << std::endl;
         // 1 print help
         std::cout << "1: Print help " << std::endl;
 
@@ -24,41 +30,44 @@ int main()
         std::cout << "=================== " << std::endl;
         std::cout << "Type in 1-6: ";
 
-        int userOption;
+        //int userOption;
+        char userOption;
         std::cin >> userOption;
 
         switch (userOption)
         {
-        case 1:
+        case '1':
             /* code */
-            std::cout << "You chose: 1" << std::endl;
+            printChar(userOption);
             break;
-        case 2:
+        case '2':
             /* code */
-            std::cout << "You chose: 2" << std::endl;
+            printChar(userOption);
             break;
-        case 3:
+        case '3':
             /* code */
-            std::cout << "You chose: 3" << std::endl;
+            printChar(userOption);
             break;
-        case 4:
+        case '4':
             /* code */
-            std::cout << "You chose: 4" << std::endl;
+            printChar(userOption);
             break;
-        case 5:
+        case '5':
             /* code */
-            std::cout << "You chose: 5" << std::endl;
+            printChar(userOption);
             break;
-        case 6:
+        case '6':
             /* code */
-            std::cout << "You chose: 6" << std::endl;
+            printChar(userOption);
             break;                                                            
         default:
-            std::cout << "Not a valid input. Please provide an input between 1 to 6 " << std::endl;
+            std::cout << userOption << " is not a valid input. Please provide an input between 1 to 6 " << std::endl;
             break;
         }
         // std::cout << "You chose: " << userOption << std::endl;
     }
+    std::cout << "=====================" << std::endl;
     
     return 0;
 }
+
