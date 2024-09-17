@@ -1,6 +1,34 @@
 #include <iostream>
 #include <string>   // Include the string header
 #include <map>      // Include the map header
+#include <vector>
+
+
+enum class OrderBookType{bid, ask};
+
+class OrderBookEntry
+{
+    public: 
+    OrderBookEntry( double _price, 
+                    double _amount, 
+                    std::string _timestamp, 
+                    std::string _product, 
+                    OrderBookType _orderType)
+    : price(_price), 
+      amount(_amount), 
+      timestamp(_timestamp), 
+      product(_product), 
+      orderType(_orderType) 
+    {            
+    }
+    double price;
+    double amount;
+    std::string timestamp;
+    std::string product;  // Corrected member variable name
+    OrderBookType orderType;   
+};
+
+
 
 void printMenu(){
     std::cout << "\n=================== " << std::endl;
@@ -64,6 +92,22 @@ void goToNextTimeFrame(){
     printChar("6: Going to next time frame.");
 }
 
+void printSizes(){
+    char c=0;
+    std::cout << "char: " << sizeof(c) << std::endl;
+
+    signed int i = 0;
+    std::cout << "signed int: " << sizeof(i) << std::endl;
+
+    float f=0.0f;
+    std::cout << "float: " << sizeof(f) << std::endl;
+
+    long double d=0.0;
+    std::cout << "long double: " << sizeof(d) << std::endl;
+
+    bool b = 0;
+    std::cout << "boolean: " << sizeof(b) << std::endl;
+}
 
 void processUserOption(const std::string& userOption){
 
@@ -89,6 +133,17 @@ void processUserOption(const std::string& userOption){
 
 int main()
 {
+
+    OrderBookEntry order1{  1000, 
+                            0.02,
+                            "2020/03/17 17:01:24.884492", 
+                            "BTC/USDT", 
+                            OrderBookType::bid};
+
+    std::cout << "The price is " << order1.price << std::endl;
+    
+
+
     while(true){
 
         printMenu(); //Menu options
