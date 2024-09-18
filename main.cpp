@@ -2,6 +2,7 @@
 #include <string>   // Include the string header
 #include <map>      // Include the map header
 #include <vector>
+#include <limits>   // Include limits header
 
 
 enum class OrderBookType{bid, ask};
@@ -64,6 +65,7 @@ double OrderBookEntry::getPrice()
 }
 
 double computeAveragePrice(const std::vector<OrderBookEntry>& orders, OrderBookType orderType) {
+    
     double average = 0;
     int count = 0;
 
@@ -83,7 +85,7 @@ double computeAveragePrice(const std::vector<OrderBookEntry>& orders, OrderBookT
 }
 
 double computeLowPrice(const std::vector<OrderBookEntry>& orders, OrderBookType orderType){
-    double val=1000000;
+    double val=std::numeric_limits<double>::max();
     int count=0;
 
     for(const OrderBookEntry& order : orders){
