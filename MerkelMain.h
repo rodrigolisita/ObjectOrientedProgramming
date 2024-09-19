@@ -7,6 +7,7 @@ class MerkelMain
         MerkelMain();
         /** Call this to start the simulation */
         void init();
+    private:
         void printMenu();
         std::string getUserOption();
         void printChar(const std::string& inputString);
