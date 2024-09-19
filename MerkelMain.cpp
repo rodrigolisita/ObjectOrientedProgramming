@@ -1,8 +1,9 @@
 #include "MerkelMain.h"
-
-
+#include <vector>
+#include <limits>   // Include limits header
 #include <map>      // Include the map header
-#include <functional> 
+#include <functional>
+//#include "OrderBookEntry.h" 
 
 MerkelMain::MerkelMain()
 {
@@ -11,6 +12,7 @@ MerkelMain::MerkelMain()
 
 void MerkelMain::init()
 {
+    loadOrderBook();
     //int input;
     std::string input;
     while(true)
@@ -21,6 +23,101 @@ void MerkelMain::init()
     }
     
 }
+
+void MerkelMain::loadOrderBook()
+{
+    //std::vector<OrderBookEntry> orders;
+
+    orders.push_back(OrderBookEntry {1000, 
+                                     0.02,
+                                    "2020/03/17 17:01:24.884492", 
+                                    "BTC/USDT", 
+                                    OrderBookType::bid});
+
+    orders.push_back(OrderBookEntry {1200, 
+                                     0.02,
+                                "2020/03/17 17:01:24.884492", 
+                                "BTC/USDT", 
+                                OrderBookType::bid});
+    
+    for (OrderBookEntry& order : orders){
+    //    std::cout << "The price is " << order.price << " for order type: " << OrderBookEntry::orderTypeToString(order.orderType)  <<  std::endl;
+        std::cout << "The price is " << order.price <<  std::endl;
+    }
+}
+
+
+double MerkelMain::computeAveragePrice(const std::vector<OrderBookEntry>& orders, OrderBookType orderType) {
+    
+    double average = 0;
+    int count = 0;
+
+    for (const OrderBookEntry& order : orders){
+        if(order.orderType == orderType){
+            average +=order.price;
+            count++;
+        }
+        
+    }
+    if(count > 0){
+        return average/count;
+    } else {
+        return 0;
+    }
+    
+}
+
+double MerkelMain::computeLowPrice(const std::vector<OrderBookEntry>& orders, OrderBookType orderType){
+    double val=std::numeric_limits<double>::max();
+    int count=0;
+
+    for(const OrderBookEntry& order : orders){
+        if(order.orderType==orderType && val>order.price){
+            val=order.price;
+            count++;
+        }
+    }
+    if(count>0){
+        return val;
+    }else{
+        return 0;
+    }
+    
+}
+
+double MerkelMain::computeHighPrice(const std::vector<OrderBookEntry>& orders, OrderBookType orderType){
+    double val=0;
+    int count = 0;
+
+    for(const OrderBookEntry& order : orders){
+        if(order.orderType==orderType && val<order.price){
+            val=order.price;
+            count++;
+        }
+    }
+    if(count > 0){
+        return val;
+    }else{
+        return 0;
+    }
+    
+}
+
+double MerkelMain::computePriceSpread(const std::vector<OrderBookEntry>& orders){
+    double ask=0.0;
+    double bid=0.0;
+
+    bid = MerkelMain::computeHighPrice(orders, OrderBookType::bid);
+    ask = MerkelMain::computeLowPrice(orders, OrderBookType::ask);
+
+    std::cout << "High bid: " << bid << " Lower ask: " << ask << std::endl;
+
+    return (bid-ask);
+
+
+}
+
+
 
 void MerkelMain::printMenu(){
     std::cout << "\n=================== " << std::endl;
@@ -67,6 +164,17 @@ void MerkelMain::printHelp(){
 
 void MerkelMain::printExhangeStats(){
     printChar("Market looks good.");
+
+    std::cout << "OrderBook contains: " << orders.size() << " entries" << std::endl;
+
+    std::cout << "The average price for bids is: " << computeAveragePrice(orders, OrderBookType::bid) << std::endl;
+    std::cout << "The average price for asks is: " << computeAveragePrice(orders, OrderBookType::ask) << std::endl;
+    std::cout << "The lower price for bids is: " << computeLowPrice(orders, OrderBookType::bid) << std::endl;
+    std::cout << "The higher price for bids is: " << computeHighPrice(orders, OrderBookType::bid) << std::endl;
+    std::cout << "The price spred is: " << computePriceSpread(orders) << std::endl;
+
+
+
 }
 void MerkelMain::enterOffer(){
     printChar("3: Make an offer.");

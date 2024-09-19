@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 
 enum class OrderBookType{bid, ask};
@@ -19,7 +20,10 @@ class OrderBookEntry
     std::string product;  // Corrected member variable name
     OrderBookType orderType;   
 
-     double getPrice();
+    double getPrice();
+
+    std::string orderTypeToString(OrderBookType);
+    
 
 
 };
