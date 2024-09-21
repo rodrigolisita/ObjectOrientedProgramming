@@ -24,6 +24,4 @@ class OrderBookEntry
 
     std::string orderTypeToString(OrderBookType);
     
-
-
 };

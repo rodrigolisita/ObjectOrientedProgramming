@@ -3,7 +3,8 @@
 #include <limits>   // Include limits header
 #include <map>      // Include the map header
 #include <functional>
-//#include "OrderBookEntry.h" 
+#include <fstream>
+#include <sstream> // For std::stringstream
 
 MerkelMain::MerkelMain()
 {
@@ -24,21 +25,70 @@ void MerkelMain::init()
     
 }
 
+OrderBookType stringToOrderBookType(const std::string& s) {
+    if (s == "bid") {
+        return OrderBookType::bid;
+    } else if (s == "ask") {
+        return OrderBookType::ask;
+    } else {
+        // Handle invalid input (e.g., throw an exception, return a default value)
+        throw std::invalid_argument("Invalid OrderBookType string: " + s);
+    }
+}
+
 void MerkelMain::loadOrderBook()
 {
-    //std::vector<OrderBookEntry> orders;
 
-    orders.push_back(OrderBookEntry {1000, 
-                                     0.02,
-                                    "2020/03/17 17:01:24.884492", 
-                                    "BTC/USDT", 
-                                    OrderBookType::bid});
+    std::ifstream csvFile{"20200317.csv"};
+    std::string line;
+    std::vector<std::string> tokens;
+    double price;
+    double amount;
 
-    orders.push_back(OrderBookEntry {1200, 
-                                     0.02,
-                                "2020/03/17 17:01:24.884492", 
-                                "BTC/USDT", 
-                                OrderBookType::bid});
+    if(csvFile.is_open())
+    {
+        std::cout << "File open " << std::endl;
+        while(std::getline(csvFile, line))
+        {
+            std::cout << "Read line " << line << std::endl;
+            tokens = tokenise(line, ',');
+            if(tokens.size() != 5 ) // bad
+            {
+                std::cout << "Bad line " << std::endl;
+                continue;
+            }
+            // We have 5 tokens
+            try{
+                price = std::stod(tokens[3]);
+                amount = std::stod(tokens[4]);  
+                // std::cout << price << ": " << amount << std::endl;
+
+                orders.push_back(OrderBookEntry {price, 
+                                                 amount,
+                                                 tokens[0], 
+                                                 tokens[1], 
+                                                stringToOrderBookType(tokens[2])});
+
+            }catch(std::exception& e){
+                std::cout << "Bad float! " << tokens[3] << std::endl;
+                std::cout << "Bad float! " << tokens[4] << std::endl;
+                continue;
+            }
+
+           
+
+//            for(std::string& t : tokens){
+//                std::cout << t << std::endl;
+//            }
+            
+        }
+
+
+        csvFile.close();
+    }
+    else{
+        std::cout << "Could not open file " << std::endl;
+    }
     
     for (OrderBookEntry& order : orders){
     //    std::cout << "The price is " << order.price << " for order type: " << OrderBookEntry::orderTypeToString(order.orderType)  <<  std::endl;

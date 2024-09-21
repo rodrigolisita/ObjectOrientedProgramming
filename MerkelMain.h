@@ -37,4 +37,7 @@ class MerkelMain
         /**Compute the price spread */
         double computePriceSpread(const std::vector<OrderBookEntry>& orders);
 
+        /**Tokenise the input */
+        std::vector<std::string> tokenise(const std::string& line, char delimiter);
+
 };
