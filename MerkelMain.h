@@ -38,6 +38,6 @@ class MerkelMain
         double computePriceSpread(const std::vector<OrderBookEntry>& orders);
 
         /**Tokenise the input */
-        std::vector<std::string> tokenise(const std::string& line, char delimiter);
+        //std::vector<std::string> tokenise(const std::string& line, char delimiter);
 
 };

@@ -5,6 +5,7 @@
 #include <functional>
 #include <fstream>
 #include <sstream> // For std::stringstream
+#include "tokenize.h"
 
 MerkelMain::MerkelMain()
 {
