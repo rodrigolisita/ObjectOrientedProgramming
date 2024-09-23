@@ -23,5 +23,7 @@ class OrderBookEntry
     double getPrice();
 
     std::string orderTypeToString(OrderBookType);
+
+    static OrderBookType stringToOrderBookType(const std::string& s);
     
 };

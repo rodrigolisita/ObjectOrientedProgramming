@@ -1,4 +1,5 @@
 #include "OrderBookEntry.h"
+#include <stdexcept> 
 
 OrderBookEntry::OrderBookEntry( double _price, 
                 double _amount, 
@@ -28,3 +29,13 @@ std::string OrderBookEntry::orderTypeToString(OrderBookType type) {
     }
 }
 
+OrderBookType OrderBookEntry::stringToOrderBookType(const std::string& s) {
+    if (s == "bid") {
+        return OrderBookType::bid;
+    } else if (s == "ask") {
+        return OrderBookType::ask;
+    } else {
+        // Handle invalid input (e.g., throw an exception, return a default value)
+        throw std::invalid_argument("Invalid OrderBookType string: " + s);
+    }
+}

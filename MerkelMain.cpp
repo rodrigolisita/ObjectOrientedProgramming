@@ -6,6 +6,7 @@
 #include <fstream>
 #include <sstream> // For std::stringstream
 #include "tokenize.h"
+#include "OrderBookEntry.h"
 
 MerkelMain::MerkelMain()
 {
@@ -26,16 +27,16 @@ void MerkelMain::init()
     
 }
 
-OrderBookType stringToOrderBookType(const std::string& s) {
-    if (s == "bid") {
-        return OrderBookType::bid;
-    } else if (s == "ask") {
-        return OrderBookType::ask;
-    } else {
-        // Handle invalid input (e.g., throw an exception, return a default value)
-        throw std::invalid_argument("Invalid OrderBookType string: " + s);
-    }
-}
+
+
+
+
+
+
+
+
+
+
 
 void MerkelMain::loadOrderBook()
 {
@@ -68,7 +69,7 @@ void MerkelMain::loadOrderBook()
                                                  amount,
                                                  tokens[0], 
                                                  tokens[1], 
-                                                stringToOrderBookType(tokens[2])});
+                                                OrderBookEntry::stringToOrderBookType(tokens[2])});
 
             }catch(std::exception& e){
                 std::cout << "Bad float! " << tokens[3] << std::endl;
