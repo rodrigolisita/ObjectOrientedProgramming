@@ -3,10 +3,9 @@
 #include <limits>   // Include limits header
 #include <map>      // Include the map header
 #include <functional>
-#include <fstream>
-#include <sstream> // For std::stringstream
-#include "tokenize.h"
+
 #include "OrderBookEntry.h"
+#include "CSVReader.h"
 
 MerkelMain::MerkelMain()
 {
@@ -27,17 +26,6 @@ void MerkelMain::init()
     
 }
 
-
-
-
-
-
-
-
-
-
-
-
 void MerkelMain::loadOrderBook()
 {
 
@@ -53,7 +41,7 @@ void MerkelMain::loadOrderBook()
         while(std::getline(csvFile, line))
         {
             std::cout << "Read line " << line << std::endl;
-            tokens = tokenise(line, ',');
+            tokens = CSVReader::tokenise(line, ',');
             if(tokens.size() != 5 ) // bad
             {
                 std::cout << "Bad line " << std::endl;
