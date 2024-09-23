@@ -29,63 +29,34 @@ void MerkelMain::init()
 void MerkelMain::loadOrderBook()
 {
 
-    std::ifstream csvFile{"20200317.csv"};
-    std::string line;
-    std::vector<std::string> tokens;
-    double price;
-    double amount;
+    orders = CSVReader::readCSV("20200317.csv");
 
-    if(csvFile.is_open())
-    {
-        std::cout << "File open " << std::endl;
-        while(std::getline(csvFile, line))
-        {
-            std::cout << "Read line " << line << std::endl;
-            tokens = CSVReader::tokenise(line, ',');
-            if(tokens.size() != 5 ) // bad
-            {
-                std::cout << "Bad line " << std::endl;
-                continue;
-            }
-            // We have 5 tokens
-            try{
-                price = std::stod(tokens[3]);
-                amount = std::stod(tokens[4]);  
-                // std::cout << price << ": " << amount << std::endl;
-
-                orders.push_back(OrderBookEntry {price, 
-                                                 amount,
-                                                 tokens[0], 
-                                                 tokens[1], 
-                                                OrderBookEntry::stringToOrderBookType(tokens[2])});
-
-            }catch(std::exception& e){
-                std::cout << "Bad float! " << tokens[3] << std::endl;
-                std::cout << "Bad float! " << tokens[4] << std::endl;
-                continue;
-            }
-
-           
-
-//            for(std::string& t : tokens){
-//                std::cout << t << std::endl;
-//            }
-            
-        }
-
-
-        csvFile.close();
-    }
-    else{
-        std::cout << "Could not open file " << std::endl;
-    }
-    
-    for (OrderBookEntry& order : orders){
+    //for (OrderBookEntry& order : orders){
     //    std::cout << "The price is " << order.price << " for order type: " << OrderBookEntry::orderTypeToString(order.orderType)  <<  std::endl;
-        std::cout << "The price is " << order.price <<  std::endl;
-    }
+        //std::cout << "The price is " << order.price <<  std::endl;
+    //}
 }
 
+
+void MerkelMain::computeNumberOfBidsAsks(const std::vector<OrderBookEntry>& orders) 
+{
+    unsigned int ask=0;
+    unsigned int bid = 0;
+
+    for (const OrderBookEntry& order : orders){
+        if(order.orderType == OrderBookType::bid){
+            bid++;
+        }
+        if(order.orderType == OrderBookType::ask){
+           ask++;
+        }
+         
+}
+
+    std::cout << "Numbers of bids: " << bid << std::endl;
+    std::cout << "Numbers of asks: " << ask << std::endl;
+
+}
 
 double MerkelMain::computeAveragePrice(const std::vector<OrderBookEntry>& orders, OrderBookType orderType) {
     
@@ -207,6 +178,8 @@ void MerkelMain::printExhangeStats(){
 
     std::cout << "OrderBook contains: " << orders.size() << " entries" << std::endl;
 
+
+    computeNumberOfBidsAsks(orders);
     std::cout << "The average price for bids is: " << computeAveragePrice(orders, OrderBookType::bid) << std::endl;
     std::cout << "The average price for asks is: " << computeAveragePrice(orders, OrderBookType::ask) << std::endl;
     std::cout << "The lower price for bids is: " << computeLowPrice(orders, OrderBookType::bid) << std::endl;

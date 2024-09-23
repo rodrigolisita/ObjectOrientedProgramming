@@ -24,6 +24,7 @@ class OrderBookEntry
 
     std::string orderTypeToString(OrderBookType);
 
+    /** Return OrderBookType::ask or ::bid */
     static OrderBookType stringToOrderBookType(const std::string& s);
     
 };

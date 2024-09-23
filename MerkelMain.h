@@ -25,6 +25,9 @@ class MerkelMain
 
         std::vector<OrderBookEntry> orders;
 
+        /**Output the number of bids and asks */
+        void computeNumberOfBidsAsks(const std::vector<OrderBookEntry>& orders);
+
         /**Compute the average price */
         double computeAveragePrice(const std::vector<OrderBookEntry>& orders, OrderBookType orderType);
 
