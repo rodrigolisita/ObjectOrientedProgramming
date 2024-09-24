@@ -27,6 +27,10 @@ class MerkelMain
         // std::vector<OrderBookEntry> orders;
         OrderBook orderBook{"20200317.csv"};
 
+        std::string currentTime;
+        std::string nextTime;
+        std::string previousTime;
+
         /**Output the number of bids and asks */
         void computeNumberOfBidsAsks(const std::vector<OrderBookEntry>& orders);
 
@@ -36,8 +40,8 @@ class MerkelMain
         /**Compute the lower price */
         double computeLowPrice(const std::vector<OrderBookEntry>& entries, OrderBookType orderType);
 
-        /**Compute the higher price */
-        double computeHighPrice(const std::vector<OrderBookEntry>& entries, OrderBookType orderType);
+        
+        
 
         /**Compute the price spread */
         double computePriceSpread(const std::vector<OrderBookEntry>& orders);

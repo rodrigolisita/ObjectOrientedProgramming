@@ -19,6 +19,25 @@ public:
     std::vector<OrderBookEntry> getOrders(OrderBookType type,
                                             std::string product,
                                             std::string timestamp);
+
+    /** Get earlisest time */
+    std::string getEarliestTime();
+
+    /** Get next time 
+     * If there is no next timestamp, wraps around to the start;
+    */
+    std::string getNextTime(std::string& timestamp);
+
+    /** Get the higher price */
+    static double getHighPrice(const std::vector<OrderBookEntry>& entries);
+
+    /** Get the lower price */
+    static double getLowPrice(const std::vector<OrderBookEntry>& entries);
+
+    /** Get the average price */
+    static double getAveragePrice(const std::vector<OrderBookEntry>& entries);
+
+
 private:
     /* data */
     std::vector<OrderBookEntry> orders;

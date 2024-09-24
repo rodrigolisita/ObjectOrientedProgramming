@@ -17,6 +17,11 @@ void MerkelMain::init()
 {
     // loadOrderBook();
     //int input;
+
+    currentTime = orderBook.getEarliestTime();
+    previousTime = currentTime;
+    nextTime = orderBook.getNextTime(currentTime);
+
     std::string input;
     while(true)
     {
@@ -142,7 +147,8 @@ void MerkelMain::printMenu(){
     std::cout << "6: Continue " << std::endl;
 
     std::cout << "=================== " << std::endl;
-    std::cout << "Type in 1-6: ";
+    std::cout << "Current time: " << currentTime << std::endl;
+    //std::cout << "Next time: " << nextTime << std::endl;
 }
 
 std::string MerkelMain::getUserOption(){
@@ -164,14 +170,25 @@ void MerkelMain::printHelp(){
 }
 
 void MerkelMain::printExhangeStats(){
-    printChar("Market looks good.");
+    printChar("Market stats....");
+    std::cout << "==================================" << std::endl;
 
     for (std::string const p : orderBook.getKnownProducts())
     {
         std::cout << "Product " << p << std::endl;
+        std::vector<OrderBookEntry> entries = orderBook.getOrders(OrderBookType::ask, 
+                                                                 p,
+                                                                 currentTime);
+        std::cout << "Asks seen: " << entries.size() << std::endl;
+        std::cout << "Max ask: " << OrderBook::getHighPrice(entries) << std::endl;
+        std::cout << "Min ask: " << OrderBook::getLowPrice(entries) << std::endl;
+        std::cout << "Average ask: " << OrderBook::getAveragePrice(entries) << std::endl;
+        std::cout << "==================================" << std::endl;
+
     }
 
-    //std::cout << "OrderBook contains: " << orders.size() << " entries" << std::endl;
+    //std::cout << "OrderBook contains: " << orderBook.size() << " entries" << std::endl;
+    //OrderBook::returnOrderSize();
 
 
     // computeNumberOfBidsAsks(orders);
@@ -198,6 +215,11 @@ void MerkelMain::printWallet(){
 
 void MerkelMain::goToNextTimeFrame(){
     printChar("6: Going to next time frame.");
+    //std::cout << "Current time: " << currentTime << std::endl;
+    //std::cout << "Next time: " << nextTime << std::endl;
+    
+    previousTime = currentTime;
+    currentTime = orderBook.getNextTime(currentTime);
 }
 
 void MerkelMain::printSizes(){
