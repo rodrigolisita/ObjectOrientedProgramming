@@ -2,6 +2,7 @@
 #include <string>   // Include the string header
 #include <vector>
 #include "OrderBookEntry.h"
+#include "OrderBook.h"
 
 class MerkelMain
 {
@@ -23,7 +24,8 @@ class MerkelMain
         void printSizes();
         void processUserOption(const std::string& userOption);
 
-        std::vector<OrderBookEntry> orders;
+        // std::vector<OrderBookEntry> orders;
+        OrderBook orderBook{"20200317.csv"};
 
         /**Output the number of bids and asks */
         void computeNumberOfBidsAsks(const std::vector<OrderBookEntry>& orders);
