@@ -158,8 +158,8 @@ void MerkelMain::printMenu(){
 std::string MerkelMain::getUserOption(){
     std::string userOption;
 
-    //std::getline(std::cin, userOption);
-    std::cin >> userOption;
+    std::getline(std::cin, userOption);
+    //std::cin >> userOption;
     return userOption;
 }
 
@@ -207,31 +207,69 @@ void MerkelMain::printExhangeStats(){
 
 
 }
+
+int getChoice()
+{
+    std::string schoice;
+    int choice;
+    std::cout << "Enter the number of the desired pair: ";
+//    std::cin >> choice;
+    //std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the buffer
+    std::getline(std::cin, schoice);
+
+    // Attempt to convert the string to an integer
+    try {
+        choice = std::stoi(schoice);
+        std::cout << "You entered the number: " << choice << std::endl;
+    } catch (const std::invalid_argument& e) {
+        std::cerr << "Invalid input. Please enter a number for the pair." << std::endl;
+    }
+    return choice;
+}
+
 void MerkelMain::enterAsk(){
     printChar("Make an ask. Available pairs: ");
 
-    // Print the available pairs
-    const std::vector<std::string>& products = orderBook.getKnownProducts();
-    for (size_t i = 0; i < products.size(); ++i) {
-        std::cout << i + 1 << ". " << products[i] << std::endl;
-    }
-
-    int choice;
-    std::cout << "Enter the number of the desired pair: ";
-    std::cin >> choice;
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the buffer
-
     bool validChoice = false;
+
+    const std::vector<std::string>& products = orderBook.getKnownProducts();
+
+    // Print the available pairs
     while(!validChoice){
-        if (choice >= 1 && choice <= products.size()) {
-            validChoice = true;
+    
+        for (size_t i = 0; i < products.size(); ++i) {
+            std::cout << i + 1 << ". " << products[i] << std::endl;
+        }
+
+//    std::string schoice;
+//    bool validChoice = false;
+    
+//    std::cout << "Enter the number of the desired pair: ";
+////    std::cin >> choice;
+//    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the buffer
+//    std::getline(std::cin, schoice);
+
+    // Attempt to convert the string to an integer
+//    try {
+//        choice = std::stoi(schoice);
+//        std::cout << "You entered the number: " << choice << std::endl;
+//    } catch (const std::invalid_argument& e) {
+//        std::cerr << "Invalid input. Please enter a number." << std::endl;
+//    }
+    
+
+    //bool validChoice = false;
+//    while(!validChoice){
+        int choice = getChoice();
+        if (choice >= 1 && choice <= products.size()) 
+        {
+            // validChoice = true;
             
             const std::string& selectedProduct = products[choice - 1]; 
 
             std::cout << "You choose the pair: " << selectedProduct << std::endl;
 
             // prompt for price and amount, validate, and call orderBook.enterAsk)
-            double price, amount;
             std::vector<OrderBookEntry> entries = orderBook.getOrders(OrderBookType::ask, 
                                                                      selectedProduct,
                                                                      currentTime);
@@ -242,13 +280,31 @@ void MerkelMain::enterAsk(){
             std::cout << "Min ask: " << minAsk << std::endl;
             std::cout << "Average ask: " << OrderBook::getAveragePrice(entries) << std::endl;
 
+            double price, amount;
+            std::string sprice, samount;
             std::cout << "Enter price: ";
-            std::cin >> price;
+            //std::cin >> price;
+            std::getline(std::cin, sprice);
+            
             std::cout << "Enter amount: ";
-            std::cin >> amount;
+            //std::cin >> amount;
+            std::getline(std::cin, samount);
+            // Attempt to convert the string to double
+            try {
+                price = std::stod(sprice);
+                amount = std::stoi(samount);
+                std::cout << "You entered the price: " << price << " and the amount of: " << amount << std::endl;
+                
+            } catch (const std::invalid_argument& e) {
+                std::cerr << "Invalid input. Please enter a number for price and amount." << std::endl;
+                continue;
+            }
 
             // Validate price and amount here
-            if ( (price > 0.0) && (price < maxAsk + 0.2*maxAsk) && amount > 0 ) {
+            if ( (price > 0.0) && (price < maxAsk + 0.3*maxAsk) && (price > minAsk - 0.3*minAsk) && amount > 0 ) {
+                
+                validChoice = true;
+                
                 orderBook.enterAsk(selectedProduct, price, amount, currentTime);
  
                 std::cout << "Ask order entered successfully!\n";
@@ -260,13 +316,11 @@ void MerkelMain::enterAsk(){
                 std::cout << "Updated Average ask: " << OrderBook::getAveragePrice(updatedEntries) << std::endl;
 
             } else {
-            std::cout << "Invalid price or amount. Please verify your values.\n";
+                std::cout << "Invalid price or amount. Please verify your values.\n";
             }
 
         } else {
             std::cout << "Invalid choice. Please select a valid pair number.\n";
-            std::cout << "Enter the number of the desired pair: ";
-            std::cin >> choice;
         }
     }
 
