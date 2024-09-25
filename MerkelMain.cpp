@@ -22,9 +22,13 @@ void MerkelMain::init()
     previousTime = currentTime;
     nextTime = orderBook.getNextTime(currentTime);
 
+
+
+
     std::string input;
     while(true)
     {
+
         printMenu();
         input = getUserOption();
         processUserOption(input);
@@ -135,7 +139,7 @@ void MerkelMain::printMenu(){
     std::cout << "2: Print exhange stats " << std::endl;
         
     // 3 make an offer
-    std::cout << "3: Make an offer " << std::endl;
+    std::cout << "3: Make an Ask " << std::endl;
 
     // 4 make a bid
     std::cout << "4: Make a bid " << std::endl;
@@ -153,7 +157,9 @@ void MerkelMain::printMenu(){
 
 std::string MerkelMain::getUserOption(){
     std::string userOption;
-    std::getline(std::cin, userOption);
+
+    //std::getline(std::cin, userOption);
+    std::cin >> userOption;
     return userOption;
 }
 
@@ -201,8 +207,117 @@ void MerkelMain::printExhangeStats(){
 
 
 }
-void MerkelMain::enterOffer(){
-    printChar("3: Make an offer.");
+void MerkelMain::enterAsk(){
+    printChar("Make an ask. Available pairs: ");
+
+    // Print the available pairs
+    const std::vector<std::string>& products = orderBook.getKnownProducts();
+    for (size_t i = 0; i < products.size(); ++i) {
+        std::cout << i + 1 << ". " << products[i] << std::endl;
+    }
+
+    int choice;
+    std::cout << "Enter the number of the desired pair: ";
+    std::cin >> choice;
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the buffer
+
+    bool validChoice = false;
+    while(!validChoice){
+        if (choice >= 1 && choice <= products.size()) {
+            validChoice = true;
+            
+            const std::string& selectedProduct = products[choice - 1]; 
+
+            std::cout << "You choose the pair: " << selectedProduct << std::endl;
+
+            // prompt for price and amount, validate, and call orderBook.enterAsk)
+            double price, amount;
+            std::vector<OrderBookEntry> entries = orderBook.getOrders(OrderBookType::ask, 
+                                                                     selectedProduct,
+                                                                     currentTime);
+
+            double maxAsk = OrderBook::getHighPrice(entries);
+            double minAsk = OrderBook::getLowPrice(entries);
+            std::cout << "Max ask: " << maxAsk << std::endl;
+            std::cout << "Min ask: " << minAsk << std::endl;
+            std::cout << "Average ask: " << OrderBook::getAveragePrice(entries) << std::endl;
+
+            std::cout << "Enter price: ";
+            std::cin >> price;
+            std::cout << "Enter amount: ";
+            std::cin >> amount;
+
+            // Validate price and amount here
+            if ( (price > 0.0) && (price < maxAsk + 0.2*maxAsk) && amount > 0 ) {
+                orderBook.enterAsk(selectedProduct, price, amount, currentTime);
+ 
+                std::cout << "Ask order entered successfully!\n";
+
+                // Display updated market information
+                std::vector<OrderBookEntry> updatedEntries = orderBook.getOrders(OrderBookType::ask, selectedProduct, currentTime);
+                std::cout << "Updated Max ask: " << OrderBook::getHighPrice(updatedEntries) << std::endl;
+                std::cout << "Updated Min ask: " << OrderBook::getLowPrice(updatedEntries) << std::endl;
+                std::cout << "Updated Average ask: " << OrderBook::getAveragePrice(updatedEntries) << std::endl;
+
+            } else {
+            std::cout << "Invalid price or amount. Please verify your values.\n";
+            }
+
+        } else {
+            std::cout << "Invalid choice. Please select a valid pair number.\n";
+            std::cout << "Enter the number of the desired pair: ";
+            std::cin >> choice;
+        }
+    }
+
+  
+
+    // std::string input;
+// 
+    // std::vector<std::string> availablePairs;
+    // unsigned int counter = 0;
+    // unsigned int pairNumber;
+    // bool validChoice = false;
+// 
+    // double value;
+    // double amount;
+// 
+    // for (std::string const p : orderBook.getKnownProducts())
+    // {
+        // availablePairs.push_back(p);
+        // std::cout << counter++ << ": " << p << std::endl;
+    // }
+// 
+    // while(!validChoice){
+        // std::cout << "Choose desired pair number: ";
+        // std::cin >> pairNumber;
+////        Check if the pair is valid:
+        // if(pairNumber < counter)
+        // {
+            // validChoice = true;
+        // }
+    // }
+    // std::cout << "You choose the pair: " << availablePairs[pairNumber] << std::endl;
+// 
+    // std::vector<OrderBookEntry> entries = orderBook.getOrders(OrderBookType::ask, 
+                                                        //  availablePairs[pairNumber],
+                                                        //  currentTime);
+// 
+    // std::cout << "Max ask: " << OrderBook::getHighPrice(entries) << std::endl;
+    // std::cout << "Min ask: " << OrderBook::getLowPrice(entries) << std::endl;
+    // std::cout << "Average ask: " << OrderBook::getAveragePrice(entries) << std::endl;
+    // 
+    // 
+    // std::cout << "Enter value: ";
+    // std::cin >> value;
+// 
+    // std::cout << "Enter amount: ";
+    // std::cin >> amount;
+    // 
+    // std::cout << "Your ask: amount = " << amount << " value = " << value << std::endl;
+// 
+    // OrderBook::enterOrder(value, amount, currentTime, availablePairs[pairNumber], "ask");
+
 }
 
 void MerkelMain::enterBid(){
@@ -246,7 +361,7 @@ void MerkelMain::processUserOption(const std::string& userOption){
     static std::map<char, std::function<void(MerkelMain*)>> optionMap={
         {'1', &MerkelMain::printHelp},
         {'2', &MerkelMain::printExhangeStats},
-        {'3', &MerkelMain::enterOffer},
+        {'3', &MerkelMain::enterAsk},
         {'4', &MerkelMain::enterBid},
         {'5', &MerkelMain::printWallet},
         {'6', &MerkelMain::goToNextTimeFrame}

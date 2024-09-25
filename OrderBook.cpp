@@ -1,13 +1,32 @@
 #include "OrderBook.h"
-#include <map>
 
 OrderBook::OrderBook(std::string filename)
 {
     orders = CSVReader::readCSV(filename);
+    orderMap = OrderBook::getOrderMap();
 }
 
 OrderBook::~OrderBook()
 {
+}
+
+std::map<std::string,bool> OrderBook::getOrderMap()
+{
+    if (!isOrderMapInitialized) { // Check if the map has already been initialized
+        std::map<std::string,bool> prodMap; // Create a local map
+
+        for (const OrderBookEntry& e : orders)  // Use const reference for read-only access
+        {
+            prodMap[e.product] = true;        // Populate the local map
+        }
+        
+        isOrderMapInitialized = true; // Set the flag to true after initialization
+    
+        return prodMap;                        // Return the local map  
+    } else {
+        return orderMap; // If already initialized, return the existing map
+    }
+    
 }
 
 std::vector<std::string> OrderBook::getKnownProducts()
@@ -15,15 +34,17 @@ std::vector<std::string> OrderBook::getKnownProducts()
     
     std::vector<std::string> products;
 
-    std::map<std::string,bool> prodMap;
+//    OrderBook::getOrderMap();
 
-    for (OrderBookEntry& e : orders)
-    {
-        prodMap[e.product] = true;
-    }
+    //std::map<std::string,bool> prodMap = OrderBook::getOrderMap();
+
+    //for (OrderBookEntry& e : orders)
+    //{
+    //    prodMap[e.product] = true;
+    //}
 
     // Flatten the map to a vector of strings
-    for (auto const& e : prodMap)
+    for (auto const& e : orderMap)
     {
         products.push_back(e.first);
     }
@@ -107,4 +128,20 @@ double OrderBook::getAveragePrice(const std::vector<OrderBookEntry>& orders){
 
     return average/count;
 
+}
+
+void OrderBook::enterAsk(const std::string& product, double price, double amount, const std::string& timestamp) {
+
+ 
+    // 1. Create a new OrderBookEntry
+    OrderBookEntry newAskOrder{price, amount, timestamp, product, OrderBookType::ask}; 
+
+    // 2. Add the new order to the orders vector
+    orders.push_back(newAskOrder);
+
+    // 3. Update the orderMap if necessary
+    if (orderMap.find(product) == orderMap.end()) {
+        // Product not found in the map, add it
+        orderMap[product] = true;
+    } // Otherwise, the product is already in the map, no need to update
 }

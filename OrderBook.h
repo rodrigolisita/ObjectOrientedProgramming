@@ -4,6 +4,8 @@
 #include "CSVReader.h"
 #include <string>
 #include <vector>
+#include <map>
+
 
 class OrderBook
 {
@@ -19,6 +21,11 @@ public:
     std::vector<OrderBookEntry> getOrders(OrderBookType type,
                                             std::string product,
                                             std::string timestamp);
+
+    void enterAsk(const std::string& product, double price, double amount, const std::string& timestamp);
+
+
+
 
     /** Get earlisest time */
     std::string getEarliestTime();
@@ -41,5 +48,10 @@ public:
 private:
     /* data */
     std::vector<OrderBookEntry> orders;
+    std::map<std::string,bool> orderMap;
+    bool isOrderMapInitialized = false; // Add a flag to track initialization
+    std::map<std::string,bool> getOrderMap();
+
+
 };
 

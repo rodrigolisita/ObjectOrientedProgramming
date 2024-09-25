@@ -17,8 +17,8 @@ class MerkelMain
         void printChar(const std::string& inputString);
         void printHelp();
         void printExhangeStats();
-        void enterOffer();
-        void enterBid();
+        void enterAsk(); // To sell something
+        void enterBid(); // To buy something
         void printWallet();
         void goToNextTimeFrame();
         void printSizes();
@@ -39,9 +39,6 @@ class MerkelMain
 
         /**Compute the lower price */
         double computeLowPrice(const std::vector<OrderBookEntry>& entries, OrderBookType orderType);
-
-        
-        
 
         /**Compute the price spread */
         double computePriceSpread(const std::vector<OrderBookEntry>& orders);
