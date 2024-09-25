@@ -241,25 +241,6 @@ void MerkelMain::enterAsk(){
             std::cout << i + 1 << ". " << products[i] << std::endl;
         }
 
-//    std::string schoice;
-//    bool validChoice = false;
-    
-//    std::cout << "Enter the number of the desired pair: ";
-////    std::cin >> choice;
-//    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the buffer
-//    std::getline(std::cin, schoice);
-
-    // Attempt to convert the string to an integer
-//    try {
-//        choice = std::stoi(schoice);
-//        std::cout << "You entered the number: " << choice << std::endl;
-//    } catch (const std::invalid_argument& e) {
-//        std::cerr << "Invalid input. Please enter a number." << std::endl;
-//    }
-    
-
-    //bool validChoice = false;
-//    while(!validChoice){
         int choice = getChoice();
         if (choice >= 1 && choice <= products.size()) 
         {
@@ -283,12 +264,13 @@ void MerkelMain::enterAsk(){
             double price, amount;
             std::string sprice, samount;
             std::cout << "Enter price: ";
-            //std::cin >> price;
+
             std::getline(std::cin, sprice);
             
             std::cout << "Enter amount: ";
-            //std::cin >> amount;
+
             std::getline(std::cin, samount);
+
             // Attempt to convert the string to double
             try {
                 price = std::stod(sprice);
