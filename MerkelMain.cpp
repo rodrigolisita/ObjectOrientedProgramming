@@ -327,18 +327,18 @@ void MerkelMain::enterTrade(){
                         //orderBook.enterAsk(selectedProduct, price, amount, currentTime);
                         orderBook.enterOrder(selectedProduct, price, amount, currentTime, OrderBookType::ask);
 
-                        std::cout << "Ask order entered successfully!\n";
+                        std::cout << "\nAsk order entered successfully!\n\n";
                     } else {
-                        std::cout << "Invalid ask price. Please verify your value.\n";
+                        std::cout << "\nInvalid ask price. Please verify your value.\n";
                     }
                 } else { //bid
                     if ((price < maxBid + 0.3*maxBid) && (price > minBid - 0.3*minBid)){
                         validChoice = true;
                         //orderBook.enterBid(selectedProduct, price, amount, currentTime);
                         orderBook.enterOrder(selectedProduct, price, amount, currentTime, OrderBookType::bid);
-                        std::cout << "Bid order entered successfully!\n";
+                        std::cout << "\nBid order entered successfully!\n\n";
                     } else {
-                        std::cout << "Invalid bid price. Please verify your value.\n";
+                        std::cout << "\nInvalid bid price. Please verify your value.\n";
                     }
                 }
                 
@@ -347,7 +347,7 @@ void MerkelMain::enterTrade(){
                     entriesAsk = orderBook.getOrders(OrderBookType::ask, selectedProduct, currentTime);
                     entriesBid = orderBook.getOrders(OrderBookType::bid, selectedProduct, currentTime);
                     
-                    std::cout << " Updated trade market information " << std::endl;
+                    std::cout << "Updated trade market information " << std::endl;
                     displayMarketInfo(entriesAsk, entriesBid, maxAsk, minAsk, maxBid, minBid);
 
                 }
@@ -361,11 +361,11 @@ void MerkelMain::enterTrade(){
 }
 
 void MerkelMain::printWallet(){
-    printChar("5: Print wallet.");
+    printChar("4: Print wallet.");
 }
 
 void MerkelMain::goToNextTimeFrame(){
-    printChar("6: Going to next time frame.");
+    printChar("5: Going to next time frame.");
     //std::cout << "Current time: " << currentTime << std::endl;
     //std::cout << "Next time: " << nextTime << std::endl;
     
