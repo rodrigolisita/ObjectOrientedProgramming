@@ -225,27 +225,9 @@ void MerkelMain::printExhangeStats(){
 
         displayMarketInfo(entriesAsk, entriesBid, maxAsk, minAsk, maxBid, minBid); 
 
-//        std::cout << "Asks seen: " << entries.size() << std::endl;
-//        std::cout << "Max ask: " << OrderBook::getHighPrice(entries) << std::endl;
-//        std::cout << "Min ask: " << OrderBook::getLowPrice(entries) << std::endl;
-//        std::cout << "Average ask: " << OrderBook::getAveragePrice(entries) << std::endl;
-//        std::cout << "==================================" << std::endl;
-
     }
 
-    //std::cout << "OrderBook contains: " << orderBook.size() << " entries" << std::endl;
-    //OrderBook::returnOrderSize();
-
-
-    // computeNumberOfBidsAsks(orders);
-    // std::cout << "The average price for bids is: " << computeAveragePrice(orders, OrderBookType::bid) << std::endl;
-    // std::cout << "The average price for asks is: " << computeAveragePrice(orders, OrderBookType::ask) << std::endl;
-    // std::cout << "The lower price for bids is: " << computeLowPrice(orders, OrderBookType::bid) << std::endl;
-    // std::cout << "The higher price for bids is: " << computeHighPrice(orders, OrderBookType::bid) << std::endl;
     // std::cout << "The price spred is: " << computePriceSpread(orders) << std::endl;
-
-
-
 }
 
 int getChoice()
@@ -314,20 +296,8 @@ void MerkelMain::enterTrade(){
                                                                      selectedProduct,
                                                                      currentTime);
 
-            //displayMarketInfo(entriesAsk, entriesBid);
-            // Calculate and display market information for both asks and bids
-            //double maxAsk = OrderBook::getHighPrice(entriesAsk);
-            //double minAsk = OrderBook::getLowPrice(entriesAsk);
-            //double maxBid = OrderBook::getHighPrice(entriesBid);
-            //double minBid = OrderBook::getLowPrice(entriesBid);
-            // std::cout << "        Asks |  Bids " << std::endl;
-            // std::cout << "Max: " << maxAsk << " | " << maxBid << std::endl;
-            // std::cout << "Min: " << minAsk << " | " << minBid << std::endl;
-            // std::cout << "Average: " << OrderBook::getAveragePrice(entriesAsk) << " | " << OrderBook::getAveragePrice(entriesBid) << std::endl;
-
             double maxAsk, minAsk, maxBid, minBid; // Declare variables to store the values
             displayMarketInfo(entriesAsk, entriesBid, maxAsk, minAsk, maxBid, minBid); 
-
 
             double price, amount;
             std::string sprice, samount;
@@ -354,7 +324,9 @@ void MerkelMain::enterTrade(){
                 if(tradeType == OrderBookType::ask){
                     if ((price < maxAsk + 0.3*maxAsk) && (price > minAsk - 0.3*minAsk)){
                         validChoice = true;
-                        orderBook.enterAsk(selectedProduct, price, amount, currentTime);
+                        //orderBook.enterAsk(selectedProduct, price, amount, currentTime);
+                        orderBook.enterOrder(selectedProduct, price, amount, currentTime, OrderBookType::ask);
+
                         std::cout << "Ask order entered successfully!\n";
                     } else {
                         std::cout << "Invalid ask price. Please verify your value.\n";
@@ -362,7 +334,8 @@ void MerkelMain::enterTrade(){
                 } else { //bid
                     if ((price < maxBid + 0.3*maxBid) && (price > minBid - 0.3*minBid)){
                         validChoice = true;
-                        orderBook.enterBid(selectedProduct, price, amount, currentTime);
+                        //orderBook.enterBid(selectedProduct, price, amount, currentTime);
+                        orderBook.enterOrder(selectedProduct, price, amount, currentTime, OrderBookType::bid);
                         std::cout << "Bid order entered successfully!\n";
                     } else {
                         std::cout << "Invalid bid price. Please verify your value.\n";
@@ -376,15 +349,6 @@ void MerkelMain::enterTrade(){
                     
                     std::cout << " Updated trade market information " << std::endl;
                     displayMarketInfo(entriesAsk, entriesBid, maxAsk, minAsk, maxBid, minBid);
-                    //maxAsk = OrderBook::getHighPrice(entriesAsk);
-                    //minAsk = OrderBook::getLowPrice(entriesAsk);
-                    //maxBid = OrderBook::getHighPrice(entriesBid);
-                    //minBid = OrderBook::getLowPrice(entriesBid);
-                    //std::cout << "        Updated Asks |  Updated Bids " << std::endl;
-                    //std::cout << "Max: " << maxAsk << " | " << maxBid << std::endl;
-                    //std::cout << "Min: " << minAsk << " | " << minBid << std::endl;
-                    //std::cout << "Average: " << OrderBook::getAveragePrice(entriesAsk) << " | " << OrderBook::getAveragePrice(entriesBid) << std::endl;
-
 
                 }
             } else {

@@ -22,8 +22,8 @@ public:
                                             std::string product,
                                             std::string timestamp);
 
-    void enterAsk(const std::string& product, double price, double amount, const std::string& timestamp);
-    void enterBid(const std::string& product, double price, double amount, const std::string& timestamp);
+    void enterOrder(const std::string& product, double price, double amount, 
+                           const std::string& timestamp, OrderBookType orderType);
 
 
 

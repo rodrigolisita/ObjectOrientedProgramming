@@ -131,30 +131,10 @@ double OrderBook::getAveragePrice(const std::vector<OrderBookEntry>& orders){
 
 }
 
-void OrderBook::enterAsk(const std::string& product, double price, double amount, const std::string& timestamp) {
-
- 
+void OrderBook::enterOrder(const std::string& product, double price, double amount, 
+                           const std::string& timestamp, OrderBookType orderType) {
     // 1. Create a new OrderBookEntry
-    OrderBookEntry newOrder{price, amount, timestamp, product, OrderBookType::ask}; 
-
-    // 2. Add the new order to the orders vector
-    orders.push_back(newOrder);
-
-    // 3. Update the orderMap if necessary
-    if (orderMap.find(product) == orderMap.end()) {
-        // Product not found in the map, add it
-        orderMap[product] = true;
-    } // Otherwise, the product is already in the map, no need to update
-
-    // 4. Sort the orders by timestamp
-    std::sort(orders.begin(), orders.end(), OrderBookEntry::compareByTimestamp);
-}
-
-void OrderBook::enterBid(const std::string& product, double price, double amount, const std::string& timestamp) {
-
- 
-    // 1. Create a new OrderBookEntry
-    OrderBookEntry newOrder{price, amount, timestamp, product, OrderBookType::bid}; 
+    OrderBookEntry newOrder{price, amount, timestamp, product, orderType}; 
 
     // 2. Add the new order to the orders vector
     orders.push_back(newOrder);
