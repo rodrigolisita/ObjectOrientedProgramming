@@ -227,8 +227,21 @@ int getChoice()
     return choice;
 }
 
-void MerkelMain::enterAsk(){
-    printChar("Make an ask. Available pairs: ");
+// Function to display market information and return max/min values
+auto displayMarketInfo = [&](const std::vector<OrderBookEntry>& entriesAsk, const std::vector<OrderBookEntry>& entriesBid,
+                             double& maxAsk, double& minAsk, double& maxBid, double& minBid) {
+    maxAsk = OrderBook::getHighPrice(entriesAsk);
+    minAsk = OrderBook::getLowPrice(entriesAsk);
+    maxBid = OrderBook::getHighPrice(entriesBid);
+    minBid = OrderBook::getLowPrice(entriesBid);
+    std::cout << "        Asks |  Bids " << std::endl;
+    std::cout << "Max: " << maxAsk << " | " << maxBid << std::endl;
+    std::cout << "Min: " << minAsk << " | " << minBid << std::endl;
+    std::cout << "Average: " << OrderBook::getAveragePrice(entriesAsk) << " | " << OrderBook::getAveragePrice(entriesBid) << std::endl;
+};
+
+void MerkelMain::enterTrade(){
+    printChar("Make a trade. Available pairs: ");
 
     bool validChoice = false;
 
@@ -244,31 +257,58 @@ void MerkelMain::enterAsk(){
         int choice = getChoice();
         if (choice >= 1 && choice <= products.size()) 
         {
-            // validChoice = true;
-            
             const std::string& selectedProduct = products[choice - 1]; 
-
             std::cout << "You choose the pair: " << selectedProduct << std::endl;
 
-            // prompt for price and amount, validate, and call orderBook.enterAsk)
-            std::vector<OrderBookEntry> entries = orderBook.getOrders(OrderBookType::ask, 
+            //Ask for trade type (ask or bid)
+            OrderBookType tradeType;
+            std::string tradeTypeString;
+            while(true){
+                std::cout << "Enter trade type (ask/bid): ";
+                std::getline(std::cin, tradeTypeString);
+                if(tradeTypeString == "ask"){
+                    tradeType = OrderBookType::ask;
+                    break;
+                }else if (tradeTypeString == "bid"){
+                    tradeType = OrderBookType::bid;
+                    break;
+                } else {
+                    std::cout << "Invalid trade type. Please enter 'ask' or 'bid'.\n";
+
+                }
+            }
+
+            // Get orders for ask and bid regardless of the chosen trade type
+            std::vector<OrderBookEntry> entriesAsk= orderBook.getOrders(OrderBookType::ask, 
                                                                      selectedProduct,
                                                                      currentTime);
 
-            double maxAsk = OrderBook::getHighPrice(entries);
-            double minAsk = OrderBook::getLowPrice(entries);
-            std::cout << "Max ask: " << maxAsk << std::endl;
-            std::cout << "Min ask: " << minAsk << std::endl;
-            std::cout << "Average ask: " << OrderBook::getAveragePrice(entries) << std::endl;
+            std::vector<OrderBookEntry> entriesBid = orderBook.getOrders(OrderBookType::bid, 
+                                                                     selectedProduct,
+                                                                     currentTime);
+
+            //displayMarketInfo(entriesAsk, entriesBid);
+            // Calculate and display market information for both asks and bids
+            //double maxAsk = OrderBook::getHighPrice(entriesAsk);
+            //double minAsk = OrderBook::getLowPrice(entriesAsk);
+            //double maxBid = OrderBook::getHighPrice(entriesBid);
+            //double minBid = OrderBook::getLowPrice(entriesBid);
+            // std::cout << "        Asks |  Bids " << std::endl;
+            // std::cout << "Max: " << maxAsk << " | " << maxBid << std::endl;
+            // std::cout << "Min: " << minAsk << " | " << minBid << std::endl;
+            // std::cout << "Average: " << OrderBook::getAveragePrice(entriesAsk) << " | " << OrderBook::getAveragePrice(entriesBid) << std::endl;
+
+            double maxAsk, minAsk, maxBid, minBid; // Declare variables to store the values
+            displayMarketInfo(entriesAsk, entriesBid, maxAsk, minAsk, maxBid, minBid); 
+
 
             double price, amount;
             std::string sprice, samount;
-            std::cout << "Enter price: ";
 
+            std::cout << "Enter price: ";
             std::getline(std::cin, sprice);
             
             std::cout << "Enter amount: ";
-
             std::getline(std::cin, samount);
 
             // Attempt to convert the string to double
@@ -283,81 +323,50 @@ void MerkelMain::enterAsk(){
             }
 
             // Validate price and amount here
-            if ( (price > 0.0) && (price < maxAsk + 0.3*maxAsk) && (price > minAsk - 0.3*minAsk) && amount > 0 ) {
+            if ( (price > 0.0) && amount > 0 ) {
+                if(tradeType == OrderBookType::ask){
+                    if ((price < maxAsk + 0.3*maxAsk) && (price > minAsk - 0.3*minAsk)){
+                        validChoice = true;
+                        orderBook.enterAsk(selectedProduct, price, amount, currentTime);
+                        std::cout << "Ask order entered successfully!\n";
+                    } else {
+                        std::cout << "Invalid ask price. Please verify your value.\n";
+                    }
+                } else { //bid
+                    if ((price < maxBid + 0.3*maxBid) && (price > minBid - 0.3*minBid)){
+                        validChoice = true;
+                        orderBook.enterBid(selectedProduct, price, amount, currentTime);
+                        std::cout << "Bid order entered successfully!\n";
+                    } else {
+                        std::cout << "Invalid bid price. Please verify your value.\n";
+                    }
+                }
                 
-                validChoice = true;
-                
-                orderBook.enterAsk(selectedProduct, price, amount, currentTime);
- 
-                std::cout << "Ask order entered successfully!\n";
+                if(validChoice){
+                    // Display updated market information
+                    entriesAsk = orderBook.getOrders(OrderBookType::ask, selectedProduct, currentTime);
+                    entriesBid = orderBook.getOrders(OrderBookType::bid, selectedProduct, currentTime);
+                    
+                    std::cout << " Updated trade market information " << std::endl;
+                    displayMarketInfo(entriesAsk, entriesBid, maxAsk, minAsk, maxBid, minBid);
+                    //maxAsk = OrderBook::getHighPrice(entriesAsk);
+                    //minAsk = OrderBook::getLowPrice(entriesAsk);
+                    //maxBid = OrderBook::getHighPrice(entriesBid);
+                    //minBid = OrderBook::getLowPrice(entriesBid);
+                    //std::cout << "        Updated Asks |  Updated Bids " << std::endl;
+                    //std::cout << "Max: " << maxAsk << " | " << maxBid << std::endl;
+                    //std::cout << "Min: " << minAsk << " | " << minBid << std::endl;
+                    //std::cout << "Average: " << OrderBook::getAveragePrice(entriesAsk) << " | " << OrderBook::getAveragePrice(entriesBid) << std::endl;
 
-                // Display updated market information
-                std::vector<OrderBookEntry> updatedEntries = orderBook.getOrders(OrderBookType::ask, selectedProduct, currentTime);
-                std::cout << "Updated Max ask: " << OrderBook::getHighPrice(updatedEntries) << std::endl;
-                std::cout << "Updated Min ask: " << OrderBook::getLowPrice(updatedEntries) << std::endl;
-                std::cout << "Updated Average ask: " << OrderBook::getAveragePrice(updatedEntries) << std::endl;
 
+                }
             } else {
                 std::cout << "Invalid price or amount. Please verify your values.\n";
             }
-
         } else {
             std::cout << "Invalid choice. Please select a valid pair number.\n";
         }
     }
-
-  
-
-    // std::string input;
-// 
-    // std::vector<std::string> availablePairs;
-    // unsigned int counter = 0;
-    // unsigned int pairNumber;
-    // bool validChoice = false;
-// 
-    // double value;
-    // double amount;
-// 
-    // for (std::string const p : orderBook.getKnownProducts())
-    // {
-        // availablePairs.push_back(p);
-        // std::cout << counter++ << ": " << p << std::endl;
-    // }
-// 
-    // while(!validChoice){
-        // std::cout << "Choose desired pair number: ";
-        // std::cin >> pairNumber;
-////        Check if the pair is valid:
-        // if(pairNumber < counter)
-        // {
-            // validChoice = true;
-        // }
-    // }
-    // std::cout << "You choose the pair: " << availablePairs[pairNumber] << std::endl;
-// 
-    // std::vector<OrderBookEntry> entries = orderBook.getOrders(OrderBookType::ask, 
-                                                        //  availablePairs[pairNumber],
-                                                        //  currentTime);
-// 
-    // std::cout << "Max ask: " << OrderBook::getHighPrice(entries) << std::endl;
-    // std::cout << "Min ask: " << OrderBook::getLowPrice(entries) << std::endl;
-    // std::cout << "Average ask: " << OrderBook::getAveragePrice(entries) << std::endl;
-    // 
-    // 
-    // std::cout << "Enter value: ";
-    // std::cin >> value;
-// 
-    // std::cout << "Enter amount: ";
-    // std::cin >> amount;
-    // 
-    // std::cout << "Your ask: amount = " << amount << " value = " << value << std::endl;
-// 
-    // OrderBook::enterOrder(value, amount, currentTime, availablePairs[pairNumber], "ask");
-
-}
-
-void MerkelMain::enterBid(){
-    printChar("4: Make a bid.");
 }
 
 void MerkelMain::printWallet(){
@@ -397,8 +406,8 @@ void MerkelMain::processUserOption(const std::string& userOption){
     static std::map<char, std::function<void(MerkelMain*)>> optionMap={
         {'1', &MerkelMain::printHelp},
         {'2', &MerkelMain::printExhangeStats},
-        {'3', &MerkelMain::enterAsk},
-        {'4', &MerkelMain::enterBid},
+        {'3', &MerkelMain::enterTrade},
+        {'4', &MerkelMain::enterTrade},
         {'5', &MerkelMain::printWallet},
         {'6', &MerkelMain::goToNextTimeFrame}
     };

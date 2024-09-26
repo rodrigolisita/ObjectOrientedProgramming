@@ -17,7 +17,7 @@ class MerkelMain
         void printChar(const std::string& inputString);
         void printHelp();
         void printExhangeStats();
-        void enterAsk(); // To sell something
+        void enterTrade(); // To sell something
         void enterBid(); // To buy something
         void printWallet();
         void goToNextTimeFrame();

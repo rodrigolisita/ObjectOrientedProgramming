@@ -23,6 +23,7 @@ public:
                                             std::string timestamp);
 
     void enterAsk(const std::string& product, double price, double amount, const std::string& timestamp);
+    void enterBid(const std::string& product, double price, double amount, const std::string& timestamp);
 
 
 
