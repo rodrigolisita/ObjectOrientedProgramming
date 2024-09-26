@@ -139,16 +139,13 @@ void MerkelMain::printMenu(){
     std::cout << "2: Print exhange stats " << std::endl;
         
     // 3 make an offer
-    std::cout << "3: Make an Ask " << std::endl;
+    std::cout << "3: Make a trade (ask or bid) " << std::endl;
 
-    // 4 make a bid
-    std::cout << "4: Make a bid " << std::endl;
+    // 4 print wallet
+    std::cout << "4: Print wallet " << std::endl;
 
-    // 5 print wallet
-    std::cout << "5: Print wallet " << std::endl;
-
-    // 6 continue
-    std::cout << "6: Continue " << std::endl;
+    // 5 continue
+    std::cout << "5: Continue " << std::endl;
 
     std::cout << "=================== " << std::endl;
     std::cout << "Current time: " << currentTime << std::endl;
@@ -407,9 +404,8 @@ void MerkelMain::processUserOption(const std::string& userOption){
         {'1', &MerkelMain::printHelp},
         {'2', &MerkelMain::printExhangeStats},
         {'3', &MerkelMain::enterTrade},
-        {'4', &MerkelMain::enterTrade},
-        {'5', &MerkelMain::printWallet},
-        {'6', &MerkelMain::goToNextTimeFrame}
+        {'4', &MerkelMain::printWallet},
+        {'5', &MerkelMain::goToNextTimeFrame}
     };
 
     // Check if the input is valid and call the associated function
