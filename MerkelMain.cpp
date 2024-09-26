@@ -3,6 +3,8 @@
 #include <limits>   // Include limits header
 #include <map>      // Include the map header
 #include <functional>
+#include <iomanip> // Include the iomanip header
+
 
 #include "OrderBookEntry.h"
 #include "CSVReader.h"
@@ -172,21 +174,62 @@ void MerkelMain::printHelp(){
 
 }
 
+// Function to display market information and return max/min values
+void MerkelMain::displayMarketInfo(const std::vector<OrderBookEntry>& entriesAsk, const std::vector<OrderBookEntry>& entriesBid,
+                                   double& maxAsk, double& minAsk, double& maxBid, double& minBid) {
+                                  
+    maxAsk = OrderBook::getHighPrice(entriesAsk);
+    minAsk = OrderBook::getLowPrice(entriesAsk);
+    maxBid = OrderBook::getHighPrice(entriesBid);
+    minBid = OrderBook::getLowPrice(entriesBid);
+
+    // Set the width for each field
+    int fieldWidth = 10;
+
+     std::cout << std::left << std::setw(fieldWidth) << " " 
+              << std::left << std::setw(fieldWidth) << "Asks: " + std::to_string(entriesAsk.size()) 
+              << std::left << std::setw(fieldWidth) << "Bids: " + std::to_string(entriesBid.size()) << std::endl;
+    
+    std::cout << std::left << std::setw(fieldWidth) << "Max: " 
+              << std::left << std::setw(fieldWidth) << maxAsk 
+              << std::left << std::setw(fieldWidth) << maxBid << std::endl;
+    
+    std::cout << std::left << std::setw(fieldWidth) << "Min: " 
+              << std::left << std::setw(fieldWidth) << minAsk
+              << std::left << std::setw(fieldWidth) << minBid << std::endl;
+    
+    std::cout << std::left << std::setw(fieldWidth) << "Average: " 
+              << std::left << std::setw(fieldWidth) << OrderBook::getAveragePrice(entriesAsk)
+              << std::left << std::setw(fieldWidth) << OrderBook::getAveragePrice(entriesBid) << std::endl;
+
+};
+
 void MerkelMain::printExhangeStats(){
     printChar("Market stats....");
     std::cout << "==================================" << std::endl;
 
+    double maxAsk, minAsk, maxBid, minBid; // Declare variables to store the values
+    
     for (std::string const p : orderBook.getKnownProducts())
     {
+        std::cout << "-------------------------------" << std::endl;
         std::cout << "Product " << p << std::endl;
-        std::vector<OrderBookEntry> entries = orderBook.getOrders(OrderBookType::ask, 
+        std::cout << "-------------------------------" << std::endl;
+        std::vector<OrderBookEntry> entriesAsk = orderBook.getOrders(OrderBookType::ask, 
                                                                  p,
                                                                  currentTime);
-        std::cout << "Asks seen: " << entries.size() << std::endl;
-        std::cout << "Max ask: " << OrderBook::getHighPrice(entries) << std::endl;
-        std::cout << "Min ask: " << OrderBook::getLowPrice(entries) << std::endl;
-        std::cout << "Average ask: " << OrderBook::getAveragePrice(entries) << std::endl;
-        std::cout << "==================================" << std::endl;
+        
+        std::vector<OrderBookEntry> entriesBid = orderBook.getOrders(OrderBookType::bid, 
+                                                         p,
+                                                         currentTime);                                                                 
+
+        displayMarketInfo(entriesAsk, entriesBid, maxAsk, minAsk, maxBid, minBid); 
+
+//        std::cout << "Asks seen: " << entries.size() << std::endl;
+//        std::cout << "Max ask: " << OrderBook::getHighPrice(entries) << std::endl;
+//        std::cout << "Min ask: " << OrderBook::getLowPrice(entries) << std::endl;
+//        std::cout << "Average ask: " << OrderBook::getAveragePrice(entries) << std::endl;
+//        std::cout << "==================================" << std::endl;
 
     }
 
@@ -217,25 +260,12 @@ int getChoice()
     // Attempt to convert the string to an integer
     try {
         choice = std::stoi(schoice);
-        std::cout << "You entered the number: " << choice << std::endl;
+        // std::cout << "You entered the number: " << choice << std::endl;
     } catch (const std::invalid_argument& e) {
         std::cerr << "Invalid input. Please enter a number for the pair." << std::endl;
     }
     return choice;
 }
-
-// Function to display market information and return max/min values
-auto displayMarketInfo = [&](const std::vector<OrderBookEntry>& entriesAsk, const std::vector<OrderBookEntry>& entriesBid,
-                             double& maxAsk, double& minAsk, double& maxBid, double& minBid) {
-    maxAsk = OrderBook::getHighPrice(entriesAsk);
-    minAsk = OrderBook::getLowPrice(entriesAsk);
-    maxBid = OrderBook::getHighPrice(entriesBid);
-    minBid = OrderBook::getLowPrice(entriesBid);
-    std::cout << "        Asks |  Bids " << std::endl;
-    std::cout << "Max: " << maxAsk << " | " << maxBid << std::endl;
-    std::cout << "Min: " << minAsk << " | " << minBid << std::endl;
-    std::cout << "Average: " << OrderBook::getAveragePrice(entriesAsk) << " | " << OrderBook::getAveragePrice(entriesBid) << std::endl;
-};
 
 void MerkelMain::enterTrade(){
     printChar("Make a trade. Available pairs: ");

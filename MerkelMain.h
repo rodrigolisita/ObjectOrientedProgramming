@@ -23,6 +23,9 @@ class MerkelMain
         void goToNextTimeFrame();
         void printSizes();
         void processUserOption(const std::string& userOption);
+        void displayMarketInfo(const std::vector<OrderBookEntry>& entriesAsk, const std::vector<OrderBookEntry>& entriesBid,
+                           double& maxAsk, double& minAsk, double& maxBid, double& minBid);
+        
 
         // std::vector<OrderBookEntry> orders;
         OrderBook orderBook{"20200317.csv"};
@@ -47,3 +50,4 @@ class MerkelMain
         //std::vector<std::string> tokenise(const std::string& line, char delimiter);
 
 };
+
