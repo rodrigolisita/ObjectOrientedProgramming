@@ -120,15 +120,19 @@ double OrderBook::getLowPrice(const std::vector<OrderBookEntry>& orders){
 
 double OrderBook::getAveragePrice(const std::vector<OrderBookEntry>& orders){
 
-    double average = 0;
-    int count = 0;
-    for (const OrderBookEntry& order : orders){
-        average +=order.price;
-        count++;
+    if(orders.size()>0){
+        double average = 0;
+        int count = 0;
+        for (const OrderBookEntry& order : orders){
+            average +=order.price;
+            count++;
+        }
+
+        return average/count;
+    }else{
+        return 0;
     }
-
-    return average/count;
-
+    
 }
 
 void OrderBook::enterOrder(const std::string& product, double price, double amount, 
@@ -147,4 +151,55 @@ void OrderBook::enterOrder(const std::string& product, double price, double amou
 
     // 4. Sort the orders by timestamp
     std::sort(orders.begin(), orders.end(), OrderBookEntry::compareByTimestamp);
+}
+
+std::vector<OrderBookEntry> OrderBook::matchAsksToBids(std::string product, std::string timestamp)
+{
+
+    std::vector<OrderBookEntry> sales;
+    double saleAmount;
+
+    // Get orders for ask and bid regardless of the chosen trade type
+    std::vector<OrderBookEntry> entriesAsk= OrderBook::getOrders(OrderBookType::ask, 
+                                                                     product,
+                                                                     timestamp);
+
+    std::vector<OrderBookEntry> entriesBid = OrderBook::getOrders(OrderBookType::bid, 
+                                                                     product,
+                                                                     timestamp);
+
+    std::sort(entriesAsk.begin(), entriesAsk.end(), OrderBookEntry::compareByPriceAsc);
+    std::sort(entriesBid.begin(), entriesBid.end(), OrderBookEntry::compareByPriceDesc);
+    
+
+    for (OrderBookEntry& ask : entriesAsk){
+        for (OrderBookEntry& bid : entriesBid){
+
+            if(bid.price >= ask.price){ // We have a match
+                if(bid.amount == ask.amount) // bid completely clears ask
+                { 
+                    saleAmount = ask.amount;
+                    bid.amount = 0;
+                } else if (bid.amount > ask.amount) //Ask is completely gone slice the bid
+                { 
+                    saleAmount = ask.amount;
+                    bid.amount -= ask.amount;
+                } else 
+                {
+                    saleAmount = bid.amount;
+                    ask.amount -= bid.amount;
+                    bid.amount = 0;
+                }
+                // Create a new OrderBookEntry
+                OrderBookEntry newOrder{ask.price, saleAmount, timestamp, product, OrderBookType::ask}; 
+                
+                // Add the new order to the orders vector
+                sales.push_back(newOrder);
+            }
+
+        }
+
+    }
+    return sales;
+
 }

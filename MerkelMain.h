@@ -28,7 +28,10 @@ class MerkelMain
         
 
         // std::vector<OrderBookEntry> orders;
-        OrderBook orderBook{"20200317.csv"};
+        //OrderBook orderBook{"20200317.csv"};
+        OrderBook orderBook{"test.csv"};
+        //OrderBook orderBook{"testNoBid.csv"};
+        //OrderBook orderBook{"testNoAsk.csv"};
 
         std::string currentTime;
         std::string nextTime;

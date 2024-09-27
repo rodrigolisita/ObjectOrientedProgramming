@@ -178,10 +178,18 @@ void MerkelMain::printHelp(){
 void MerkelMain::displayMarketInfo(const std::vector<OrderBookEntry>& entriesAsk, const std::vector<OrderBookEntry>& entriesBid,
                                    double& maxAsk, double& minAsk, double& maxBid, double& minBid) {
                                   
-    maxAsk = OrderBook::getHighPrice(entriesAsk);
-    minAsk = OrderBook::getLowPrice(entriesAsk);
-    maxBid = OrderBook::getHighPrice(entriesBid);
-    minBid = OrderBook::getLowPrice(entriesBid);
+    maxAsk = 0;
+    minAsk = 0;
+    maxBid = 0;
+    minBid = 0;
+    if(entriesAsk.size()>0){
+        maxAsk = OrderBook::getHighPrice(entriesAsk);
+        minAsk = OrderBook::getLowPrice(entriesAsk);
+    }
+    if(entriesBid.size() > 0){
+        maxBid = OrderBook::getHighPrice(entriesBid);
+        minBid = OrderBook::getLowPrice(entriesBid);
+    }
 
     // Set the width for each field
     int fieldWidth = 10;
@@ -366,9 +374,21 @@ void MerkelMain::printWallet(){
 
 void MerkelMain::goToNextTimeFrame(){
     printChar("5: Going to next time frame.");
-    //std::cout << "Current time: " << currentTime << std::endl;
-    //std::cout << "Next time: " << nextTime << std::endl;
-    
+
+
+    printExhangeStats();
+
+    for (std::string& p : orderBook.getKnownProducts())
+    {
+        std::cout << "matching " << p << std::endl;
+        std::vector<OrderBookEntry> sales = orderBook.matchAsksToBids(p, currentTime);
+        std::cout << "Sales: " << sales.size() << std::endl;
+        for (OrderBookEntry& sale : sales)
+        {
+            std::cout << "Sale price: " << sale.price << " amount " << sale.amount << std::endl;
+        }
+    }
+
     previousTime = currentTime;
     currentTime = orderBook.getNextTime(currentTime);
 }
