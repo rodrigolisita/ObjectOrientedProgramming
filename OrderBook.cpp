@@ -157,7 +157,6 @@ std::vector<OrderBookEntry> OrderBook::matchAsksToBids(std::string product, std:
 {
 
     std::vector<OrderBookEntry> sales;
-    double saleAmount;
 
     // Get orders for ask and bid regardless of the chosen trade type
     std::vector<OrderBookEntry> entriesAsk= OrderBook::getOrders(OrderBookType::ask, 
@@ -176,25 +175,33 @@ std::vector<OrderBookEntry> OrderBook::matchAsksToBids(std::string product, std:
         for (OrderBookEntry& bid : entriesBid){
 
             if(bid.price >= ask.price){ // We have a match
+            
+                OrderBookEntry newOrder{ask.price, 0, timestamp, product, OrderBookType::sale}; 
+
                 if(bid.amount == ask.amount) // bid completely clears ask
                 { 
-                    saleAmount = ask.amount;
+                    //saleAmount = ask.amount;
+                    newOrder.amount = ask.amount;
                     bid.amount = 0;
-                } else if (bid.amount > ask.amount) //Ask is completely gone slice the bid
+                    sales.push_back(newOrder);
+                    break;
+                }
+                if (bid.amount > ask.amount) //Ask is completely gone slice the bid
                 { 
-                    saleAmount = ask.amount;
+                    //saleAmount = ask.amount;
+                    newOrder.amount = ask.amount;
                     bid.amount -= ask.amount;
-                } else 
+                    sales.push_back(newOrder);
+                    break;
+                }
+                if (bid.amount < ask.amount )
                 {
-                    saleAmount = bid.amount;
+                    newOrder.amount = bid.amount;
                     ask.amount -= bid.amount;
                     bid.amount = 0;
+                    sales.push_back(newOrder);
+                    continue;
                 }
-                // Create a new OrderBookEntry
-                OrderBookEntry newOrder{ask.price, saleAmount, timestamp, product, OrderBookType::ask}; 
-                
-                // Add the new order to the orders vector
-                sales.push_back(newOrder);
             }
 
         }
