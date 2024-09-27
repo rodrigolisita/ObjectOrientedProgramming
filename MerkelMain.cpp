@@ -24,8 +24,7 @@ void MerkelMain::init()
     previousTime = currentTime;
     nextTime = orderBook.getNextTime(currentTime);
 
-
-
+    wallet.insertCurrency("BTC", 10);
 
     std::string input;
     while(true)
@@ -332,19 +331,30 @@ void MerkelMain::enterTrade(){
                 if(tradeType == OrderBookType::ask){
                     if ((price < maxAsk + 0.3*maxAsk) && (price > minAsk - 0.3*minAsk)){
                         validChoice = true;
-                        //orderBook.enterAsk(selectedProduct, price, amount, currentTime);
-                        orderBook.enterOrder(selectedProduct, price, amount, currentTime, OrderBookType::ask);
-
-                        std::cout << "\nAsk order entered successfully!\n\n";
+                   
+                        if(wallet.canFulfillOrder(selectedProduct, price, amount, currentTime, OrderBookType::ask)){
+                            std::cout << "Wallet looks good. " << std::endl;
+                            orderBook.enterOrder(selectedProduct, price, amount, currentTime, OrderBookType::ask);
+                            std::cout << "\nAsk order entered successfully!\n\n";
+                        }
+                        else{
+                            std::cout << "Wallet has insuficient funds. " << std::endl;
+                        }
+                        
                     } else {
                         std::cout << "\nInvalid ask price. Please verify your value.\n";
                     }
                 } else { //bid
                     if ((price < maxBid + 0.3*maxBid) && (price > minBid - 0.3*minBid)){
                         validChoice = true;
-                        //orderBook.enterBid(selectedProduct, price, amount, currentTime);
-                        orderBook.enterOrder(selectedProduct, price, amount, currentTime, OrderBookType::bid);
-                        std::cout << "\nBid order entered successfully!\n\n";
+                        
+                        if(wallet.canFulfillOrder(selectedProduct, price, amount, currentTime, OrderBookType::bid)){
+                            orderBook.enterOrder(selectedProduct, price, amount, currentTime, OrderBookType::bid);
+                            std::cout << "\nBid order entered successfully!\n\n";
+                        }
+                        else{
+                            std::cout << "Wallet has insuficient funds. " << std::endl;
+                        }
                     } else {
                         std::cout << "\nInvalid bid price. Please verify your value.\n";
                     }
@@ -370,6 +380,9 @@ void MerkelMain::enterTrade(){
 
 void MerkelMain::printWallet(){
     printChar("4: Print wallet.");
+
+    std::cout << wallet.toString() << std::endl;
+
 }
 
 void MerkelMain::goToNextTimeFrame(){

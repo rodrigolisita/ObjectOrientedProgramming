@@ -3,6 +3,7 @@
 #include <vector>
 #include "OrderBookEntry.h"
 #include "OrderBook.h"
+#include "Wallet.h"
 
 class MerkelMain
 {
@@ -28,10 +29,11 @@ class MerkelMain
         
 
         // std::vector<OrderBookEntry> orders;
-        //OrderBook orderBook{"20200317.csv"};
-        OrderBook orderBook{"test.csv"};
+        OrderBook orderBook{"20200317.csv"};
+        //OrderBook orderBook{"test.csv"};
         //OrderBook orderBook{"testNoBid.csv"};
         //OrderBook orderBook{"testNoAsk.csv"};
+        Wallet wallet;
 
         std::string currentTime;
         std::string nextTime;

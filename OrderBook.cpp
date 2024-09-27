@@ -155,7 +155,6 @@ void OrderBook::enterOrder(const std::string& product, double price, double amou
 
 std::vector<OrderBookEntry> OrderBook::matchAsksToBids(std::string product, std::string timestamp)
 {
-
     std::vector<OrderBookEntry> sales;
 
     // Get orders for ask and bid regardless of the chosen trade type

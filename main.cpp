@@ -3,35 +3,23 @@
 //#include <map>      // Include the map header
 #include <vector>
 #include <limits>   // Include limits header
-
-
-
 #include "OrderBookEntry.h"
 #include "MerkelMain.h"
-
-
-
-
-// Lesson worksheet: using header files and making a class with functions
-
-
-
-
-
-
-
-
-
-
-
 
 int main()
 {
 
-
-
     MerkelMain app{};
     app.init();
+
+    // Wallet wallet;
+    // wallet.insertCurrency("BTC", 10);
+    // wallet.insertCurrency("USDT", 1000);
+    // 
+    // std::cout << wallet.toString() << std::endl;
+// 
+    // wallet.removeCurrency("USDT", 100);
+    // std::cout << wallet.toString() << std::endl;
 
     return 0;
 }
