@@ -136,9 +136,9 @@ double OrderBook::getAveragePrice(const std::vector<OrderBookEntry>& orders){
 }
 
 void OrderBook::enterOrder(const std::string& product, double price, double amount, 
-                           const std::string& timestamp, OrderBookType orderType) {
+                           const std::string& timestamp, OrderBookType orderType, std::string username) {
     // 1. Create a new OrderBookEntry
-    OrderBookEntry newOrder{price, amount, timestamp, product, orderType}; 
+    OrderBookEntry newOrder{price, amount, timestamp, product, orderType, username}; 
 
     // 2. Add the new order to the orders vector
     orders.push_back(newOrder);
@@ -174,8 +174,22 @@ std::vector<OrderBookEntry> OrderBook::matchAsksToBids(std::string product, std:
         for (OrderBookEntry& bid : entriesBid){
 
             if(bid.price >= ask.price){ // We have a match
+
+                OrderBookEntry newOrder{ask.price, 0, timestamp, product, OrderBookType::asksale}; 
+
+
+                if(bid.username == "simuser")
+                {
+                    newOrder.username = "simuser";
+                    newOrder.orderType = OrderBookType::bidsale;
+                }
+                if(ask.username == "simuser")
+                {
+                    newOrder.username = "simuser";
+                    newOrder.orderType = OrderBookType::asksale;
+                }
+
             
-                OrderBookEntry newOrder{ask.price, 0, timestamp, product, OrderBookType::sale}; 
 
                 if(bid.amount == ask.amount) // bid completely clears ask
                 { 
@@ -193,7 +207,7 @@ std::vector<OrderBookEntry> OrderBook::matchAsksToBids(std::string product, std:
                     sales.push_back(newOrder);
                     break;
                 }
-                if (bid.amount < ask.amount )
+                if (bid.amount < ask.amount && bid.amount > 0)
                 {
                     newOrder.amount = bid.amount;
                     ask.amount -= bid.amount;

@@ -334,7 +334,7 @@ void MerkelMain::enterTrade(){
                    
                         if(wallet.canFulfillOrder(selectedProduct, price, amount, currentTime, OrderBookType::ask)){
                             std::cout << "Wallet looks good. " << std::endl;
-                            orderBook.enterOrder(selectedProduct, price, amount, currentTime, OrderBookType::ask);
+                            orderBook.enterOrder(selectedProduct, price, amount, currentTime, OrderBookType::ask,"simuser");
                             std::cout << "\nAsk order entered successfully!\n\n";
                         }
                         else{
@@ -349,7 +349,7 @@ void MerkelMain::enterTrade(){
                         validChoice = true;
                         
                         if(wallet.canFulfillOrder(selectedProduct, price, amount, currentTime, OrderBookType::bid)){
-                            orderBook.enterOrder(selectedProduct, price, amount, currentTime, OrderBookType::bid);
+                            orderBook.enterOrder(selectedProduct, price, amount, currentTime, OrderBookType::bid,"simuser");
                             std::cout << "\nBid order entered successfully!\n\n";
                         }
                         else{
@@ -379,9 +379,38 @@ void MerkelMain::enterTrade(){
 }
 
 void MerkelMain::printWallet(){
-    printChar("4: Print wallet.");
+    printChar("4: Print wallet...");
 
+    printChar("---\nCurrent Wallet:");
     std::cout << wallet.toString() << std::endl;
+    
+
+    //printChar("---\nInserting 10 BTC.");
+    //wallet.insertCurrency("BTC", 10);
+    //std::cout << wallet.toString() << std::endl;
+    //std::cout << "Wallet contains 10 BTC? " << wallet.containsCurrency("BTC" , 10.0) << std::endl;
+    //std::cout << "Wallet contains 20 BTC? " << wallet.containsCurrency("BTC" , 20.0) << std::endl;
+
+    //printChar("---\nInserting 1 BTC.");
+    //wallet.insertCurrency("BTC", 1);
+    //std::cout << wallet.toString() << std::endl;
+
+    //printChar("---\nRemoving 2 BTC.");
+    //wallet.removeCurrency("BTC", 2);
+    //std::cout << wallet.toString() << std::endl;
+
+    //printChar("---\nRemoving 2 ETH (not in wallet yet).");
+    //wallet.removeCurrency("ETH", 2);
+    //std::cout << wallet.toString() << std::endl;
+
+    //printChar("---\nAdding 2 ETH (not in wallet yet).");
+    //wallet.insertCurrency("ETH", 2);
+    //std::cout << wallet.toString() << std::endl;
+
+    //printChar("---\nInserting -10 BTC. (Shold throw an exception)");
+    //wallet.insertCurrency("BTC", -10);
+    //std::cout << wallet.toString() << std::endl;
+
 
 }
 
@@ -399,6 +428,12 @@ void MerkelMain::goToNextTimeFrame(){
         for (OrderBookEntry& sale : sales)
         {
             std::cout << "Sale price: " << sale.price << " amount " << sale.amount << std::endl;
+            if(sale.username == "simuser")
+            {
+                // update the wallet
+                wallet.processSale(sale);
+
+            }
         }
     }
 

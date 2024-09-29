@@ -73,7 +73,11 @@ std::string Wallet::toString(){
         double amount = pair.second;
         s += currency + " : " + std::to_string(amount) + "\n";
     }
+    if(s ==""){
+        return "Wallet is empty";
+    }
     return s;
+    
 }
 
 bool Wallet::canFulfillOrder(const std::string& product, double price, double amount, 
@@ -100,3 +104,35 @@ bool Wallet::canFulfillOrder(const std::string& product, double price, double am
    
     return false;
 } 
+
+void Wallet::processSale(OrderBookEntry& sale)
+{
+    std::vector<std::string> currs = CSVReader::tokenise(sale.product, '/');
+    // ask
+    if(sale.orderType == OrderBookType::asksale)
+    {
+        std::string outgoingCurrency = currs[0];
+        double outgoingAmount = sale.amount;
+
+        currencies[outgoingCurrency] -= outgoingAmount;
+        
+        double incomingAmount = sale.amount * sale.price;
+        std::string incomingCurrency = currs[1];
+
+        currencies[incomingCurrency] += incomingAmount;
+    
+    }
+    // bid
+    if(sale.orderType == OrderBookType::bidsale)
+    {
+        std::string incomingCurrency = currs[0];
+        double incomingAmount = sale.amount;
+        currencies[incomingCurrency] += incomingAmount;
+
+        
+        std::string outgoingCurrency = currs[1];
+        double outgoingAmount = sale.amount * sale.price;
+        currencies[outgoingCurrency] -= outgoingAmount;
+    }
+
+}

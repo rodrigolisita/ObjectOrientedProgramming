@@ -21,12 +21,17 @@ public:
     //bool canFulfillOrder(OrderbookEntry order);
     bool canFulfillOrder(const std::string& product, double price, double amount,
                             const std::string& timestamp, OrderBookType orderType);
+    /** update the contents of the wallet
+     * assumer the order was made by the owner of the waller=t
+     */
+    void processSale(OrderBookEntry& sale);
+
     /** Generate a string representing the wallet */
     std::string toString();
 
 private:
     /* data */
-    std::map<std::string,double> currencies;
+    std::map<std::string, double> currencies;
 };
 
 

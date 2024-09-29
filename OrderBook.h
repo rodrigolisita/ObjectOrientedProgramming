@@ -23,7 +23,7 @@ public:
                                             std::string timestamp);
 
     void enterOrder(const std::string& product, double price, double amount, 
-                           const std::string& timestamp, OrderBookType orderType);
+                           const std::string& timestamp, OrderBookType orderType, std::string username);
     
 
     std::vector<OrderBookEntry> matchAsksToBids(std::string product, std::string timestamp);

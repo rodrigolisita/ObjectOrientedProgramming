@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 
-enum class OrderBookType{bid, ask, sale};
+enum class OrderBookType{bid, ask, asksale, bidsale};
 
 class OrderBookEntry
 {
@@ -13,12 +13,14 @@ class OrderBookEntry
                    double _amount, 
                    std::string _timestamp, 
                    std::string _product, 
-                   OrderBookType _orderType);
+                   OrderBookType _orderType,
+                   std::string username = "dataset");
     double price;
     double amount;
     std::string timestamp;
     std::string product;  // Corrected member variable name
     OrderBookType orderType;   
+    std::string username;
 
     double getPrice();
 
