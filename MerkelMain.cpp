@@ -129,7 +129,7 @@ void MerkelMain::init()
 // }
 
 
-
+/** Print Menu */
 void MerkelMain::printMenu(){
     std::cout << "\n=================== " << std::endl;
     std::cout << "====== Menu ======= " << std::endl;
@@ -165,6 +165,7 @@ void MerkelMain::printChar(const std::string& inputString) {
     std::cout << inputString << std::endl;
 }
 
+/** 1: printHelp */
 void MerkelMain::printHelp(){
     //printMenu();
     std::cout << "Help - your aim is to make money." << std::endl;
@@ -173,7 +174,7 @@ void MerkelMain::printHelp(){
 
 }
 
-// Function to display market information and return max/min values
+/** Function to display market information and return max/min values */
 void MerkelMain::displayMarketInfo(const std::vector<OrderBookEntry>& entriesAsk, const std::vector<OrderBookEntry>& entriesBid,
                                    double& maxAsk, double& minAsk, double& maxBid, double& minBid) {
                                   
@@ -211,6 +212,7 @@ void MerkelMain::displayMarketInfo(const std::vector<OrderBookEntry>& entriesAsk
 
 };
 
+/** 2. printExhangeStats */
 void MerkelMain::printExhangeStats(){
     printChar("Market stats....");
     std::cout << "==================================" << std::endl;
@@ -237,6 +239,8 @@ void MerkelMain::printExhangeStats(){
     // std::cout << "The price spred is: " << computePriceSpread(orders) << std::endl;
 }
 
+/** Functions necessary for enterTrade */
+/** Get user choice. called by enterTrade */
 int getChoice()
 {
     std::string schoice;
@@ -256,6 +260,29 @@ int getChoice()
     return choice;
 }
 
+/** Process user option */ 
+void MerkelMain::processUserOption(const std::string& userOption){
+
+    // Define a map to associate user input with functions
+    // Use std::function to store member function pointers
+    static std::map<char, std::function<void(MerkelMain*)>> optionMap={
+        {'1', &MerkelMain::printHelp},
+        {'2', &MerkelMain::printExhangeStats},
+        {'3', &MerkelMain::enterTrade},
+        {'4', &MerkelMain::printWallet},
+        {'5', &MerkelMain::goToNextTimeFrame}
+    };
+
+    // Check if the input is valid and call the associated function
+    if (userOption.length() == 1 && optionMap.count(userOption[0])) {
+        optionMap[userOption[0]](this); // Call the function
+    } else {
+        std::cout << userOption << " is not a valid input. Please provide an input between 1 to 6 " << std::endl;
+    }
+
+}
+
+/** 3. enterTrade */
 void MerkelMain::enterTrade(){
     printChar("Make a trade. Available pairs: ");
 
@@ -378,6 +405,7 @@ void MerkelMain::enterTrade(){
     }
 }
 
+/** 4. printWallet */
 void MerkelMain::printWallet(){
     printChar("4: Print wallet...");
 
@@ -414,6 +442,7 @@ void MerkelMain::printWallet(){
 
 }
 
+/** 5. goToNextTimeFrame */
 void MerkelMain::goToNextTimeFrame(){
     printChar("5: Going to next time frame.");
 
@@ -441,6 +470,8 @@ void MerkelMain::goToNextTimeFrame(){
     currentTime = orderBook.getNextTime(currentTime);
 }
 
+
+
 void MerkelMain::printSizes(){
     char c=0;
     std::cout << "char: " << sizeof(c) << std::endl;
@@ -458,23 +489,3 @@ void MerkelMain::printSizes(){
     std::cout << "boolean: " << sizeof(b) << std::endl;
 }
 
-void MerkelMain::processUserOption(const std::string& userOption){
-
-    // Define a map to associate user input with functions
-    // Use std::function to store member function pointers
-    static std::map<char, std::function<void(MerkelMain*)>> optionMap={
-        {'1', &MerkelMain::printHelp},
-        {'2', &MerkelMain::printExhangeStats},
-        {'3', &MerkelMain::enterTrade},
-        {'4', &MerkelMain::printWallet},
-        {'5', &MerkelMain::goToNextTimeFrame}
-    };
-
-    // Check if the input is valid and call the associated function
-    if (userOption.length() == 1 && optionMap.count(userOption[0])) {
-        optionMap[userOption[0]](this); // Call the function
-    } else {
-        std::cout << userOption << " is not a valid input. Please provide an input between 1 to 6 " << std::endl;
-    }
-
-}
