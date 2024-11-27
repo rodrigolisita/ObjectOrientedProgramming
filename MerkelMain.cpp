@@ -141,6 +141,7 @@ void MerkelMain::printMenu(){
         
     // 3 make an offer
     std::cout << "3: Make a trade (ask or bid) " << std::endl;
+    std::cout << "   ask = sale; bid = buy" << std::endl;
 
     // 4 print wallet
     std::cout << "4: Print wallet " << std::endl;
@@ -307,16 +308,16 @@ void MerkelMain::enterTrade(){
             OrderBookType tradeType;
             std::string tradeTypeString;
             while(true){
-                std::cout << "Enter trade type (ask/bid): ";
+                std::cout << "Enter trade type (sale/buy): ";
                 std::getline(std::cin, tradeTypeString);
-                if(tradeTypeString == "ask"){
+                if(tradeTypeString == "sale"){
                     tradeType = OrderBookType::ask;
                     break;
-                }else if (tradeTypeString == "bid"){
+                }else if (tradeTypeString == "buy"){
                     tradeType = OrderBookType::bid;
                     break;
                 } else {
-                    std::cout << "Invalid trade type. Please enter 'ask' or 'bid'.\n";
+                    std::cout << "Invalid trade type. Please enter 'sale' or 'buy'.\n";
 
                 }
             }
@@ -400,7 +401,7 @@ void MerkelMain::enterTrade(){
                 std::cout << "Invalid price or amount. Please verify your values.\n";
             }
         } else {
-            std::cout << "Invalid choice. Please select a valid pair number.\n";
+            std::cout << "Please select a valid pair number (1-5).\n";
         }
     }
 }
